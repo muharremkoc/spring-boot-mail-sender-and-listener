@@ -1,0 +1,19 @@
+version: '3.1'
+services:
+  artemis:
+    image: vromero/activemq-artemis
+    container_name: artemis
+
+    restart: always
+
+    environment:
+    - "TZ"
+    - "ARTEMIS_USERNAME=admin"
+    - "ARTEMIS_PASSWORD=password"
+    ports:
+    - "8161:8161"
+    - "61616:61616"
+
+    volumes:
+    - "./data/artemis-data:/var/lib/artemis/data:Z"
+

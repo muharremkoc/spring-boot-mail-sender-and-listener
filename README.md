@@ -2,9 +2,11 @@
 
 
 
----
+
 
 This Project using SMTP for Mail Sender and Artemis for Mail Listener
+
+---
 ## Requirements
 
 - Spring Boot

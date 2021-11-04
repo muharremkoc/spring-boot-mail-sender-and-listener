@@ -49,7 +49,7 @@ public class EmailController {
     @PostMapping(value = "/sendAttachment",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String fileUpload(@RequestParam String[] to, @RequestPart MultipartFile file)  {
 
-      EmailRequestDTO requestDTO=EmailRequestDTO.builder().to(to).from("kmuho5885").name("sdsdsadas").subject("sadasdasdas").build();
+      EmailRequestDTO requestDTO=EmailRequestDTO.builder().to(to).from("from").name("sdsdsadas").subject("sadasdasdas").build();
 
         return emailService.sendMailWithAttachment(requestDTO,file);
     }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -46,7 +47,7 @@ public class EmailController {
      */
 
     @PostMapping(value = "/sendAttachment",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String fileUpload( @RequestPart String to, @RequestPart MultipartFile file)  {
+    public String fileUpload(@RequestParam String[] to, @RequestPart MultipartFile file)  {
 
       EmailRequestDTO requestDTO=EmailRequestDTO.builder().to(to).from("kmuho5885").name("sdsdsadas").subject("sadasdasdas").build();
 

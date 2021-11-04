@@ -42,9 +42,12 @@ public class EmailServiceImpl implements EmailService {
     @Value("${spring.mail.host")
     String host;
 
+    String response;
+
     @Override
     public String sendMail(EmailRequestDTO request, Map<String, String> model) {
-        String response;
+
+
         MimeMessage message = mailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message);
@@ -52,13 +55,17 @@ public class EmailServiceImpl implements EmailService {
 
           //  Template template = configuration.getTemplate("email.ftl");
             //String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
-            helper.setTo(request.getTo());
-            helper.setFrom(request.getFrom());
-            helper.setSubject(request.getSubject());
-            helper.setText(request.getName());
-            //helper.addAttachment("attachment.pdf", pdf);
-            mailSender.send(message);
-            response = "Email has been send to :" + request.getTo();
+            for (String to:request.getTo()) {
+                helper.setTo(to);
+                helper.setFrom(request.getFrom());
+                helper.setSubject(request.getSubject());
+                helper.setText(request.getName());
+                //helper.addAttachment("attachment.pdf", pdf);
+
+                mailSender.send(message);
+                response = "Email has been send to :"+request.getTo();
+            }
+
         } catch (MessagingException e) {
             response = "Email send failure to :" + request.getTo();
         }
@@ -72,7 +79,7 @@ public class EmailServiceImpl implements EmailService {
     public String sendMailWithAttachment(EmailRequestDTO requestDTO,MultipartFile file){
 
 
-        String response;
+
         MimeMessage message = mailSender.createMimeMessage();
 
 
@@ -82,20 +89,21 @@ public class EmailServiceImpl implements EmailService {
 
 
             //FileDataSource fds = new FileDataSource(file.getOriginalFilename());//file to attach
-            helper.setTo(requestDTO.getTo());
-            helper.setFrom(requestDTO.getFrom());
-            helper.setSubject(requestDTO.getSubject());
-            helper.setText(requestDTO.getName());
+            for (String to:requestDTO.getTo()) {
+                helper.setTo(to);
+                helper.setFrom(requestDTO.getFrom());
+                helper.setSubject(requestDTO.getSubject());
+                helper.setText(requestDTO.getName());
+                helper.addAttachment(file.getOriginalFilename(),new ByteArrayResource(file.getBytes()));
+                dispatcherService.sendMessage("\nFrom:"+requestDTO.getFrom()+"\nTo:"+to+"\n"+file.getOriginalFilename());
+                mailSender.send(message);
+                response = "Email has been send  :"+to;
+
+            }
 
 
 
 
-
-            helper.addAttachment(file.getOriginalFilename(),new ByteArrayResource(file.getBytes()));
-            mailSender.send(message);
-
-            response = "Email has been send  :"+requestDTO.getTo();
-            dispatcherService.sendMessage("\nFrom:"+requestDTO.getFrom()+"\nTo:"+requestDTO.getTo()+"\n"+file.getOriginalFilename());
         } catch (MessagingException | IOException e) {
             response = "Email send failure!!";
         }
@@ -117,7 +125,9 @@ public class EmailServiceImpl implements EmailService {
 
                     MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-                    helper.setTo(requestFileDTO.getTo());
+                    for (String to:requestFileDTO.getTo()) {
+                        helper.setTo(to);
+                    }
                     helper.setFrom(requestFileDTO.getFrom());
                     helper.setSubject(requestFileDTO.getSubject());
                     helper.setText(requestFileDTO.getName());

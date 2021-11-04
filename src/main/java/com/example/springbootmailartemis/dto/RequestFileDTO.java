@@ -12,7 +12,7 @@ public class RequestFileDTO {
 
 
     String from;
-    String to;
+    String[] to;
     String subject;
     String name;
     List<MultipartFile> file;
